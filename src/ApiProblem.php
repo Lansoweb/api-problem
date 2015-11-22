@@ -3,6 +3,7 @@ namespace LosMiddleware\ApiProblem;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 
@@ -10,26 +11,25 @@ final class ApiProblem implements ErrorMiddlewareInterface
 {
 
     /**
-     * Runs the middleware
-     *
      * @param RequestInterface $request
      * @param ResponseInterface $response
      * @param callable $next
      */
-    public function __invoke($error, RequestInterface $request, ResponseInterface $response, $next = null)
+    public function __invoke($error, ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
         $data = [];
 
         $status = $this->getStatusCode($error, $response);
+        $message = $this->getMessage($error, $request, $response);
 
-        if ($status == 404) {
+        if ($status == 404 && empty($message)) {
             $detail = sprintf("Path '%s' not found.", $request->getUri()->getPath());
         } else {
-            $detail = 'erro';
+            $detail = $message;
         }
 
-        $problem = new Model\ApiProblem($data['status'], $detail);
-        $data = json_encode($problem->toArray());
+        $problem = new Model\ApiProblem($status, $detail);
+        $data = $problem->toArray();
 
         $requestId = $this->getRequestId($request, $response);
         if (! empty($requestId)) {
@@ -40,6 +40,29 @@ final class ApiProblem implements ErrorMiddlewareInterface
         return $response->withHeader('Content-Type', 'application/problem+json');
     }
 
+    /**
+     * Returns an error message from $error
+     *
+     * @param \Exception $error
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return string
+     */
+    private function getMessage($error, ServerRequestInterface $request, ResponseInterface $response)
+    {
+        if ($error instanceof \Exception) {
+            return $error->getMessage();
+        }
+        return 'An error ocurred.';
+    }
+
+    /**
+     * Returns the status code from the error or response
+     *
+     * @param unknown $error
+     * @param ResponseInterface $response
+     * @return int
+     */
     private function getStatusCode($error, ResponseInterface $response)
     {
         if ($error instanceof \Exception && ($error->getCode() >= 400 && $error->getCode() <= 599)) {
@@ -53,6 +76,13 @@ final class ApiProblem implements ErrorMiddlewareInterface
         return $status;
     }
 
+    /**
+     * Returns the X-Request-Id if present
+     *
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @return string
+     */
     private function getRequestId(RequestInterface $request, ResponseInterface $response)
     {
         if ($request->hasHeader('X-Request-Id')) {
