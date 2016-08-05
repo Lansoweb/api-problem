@@ -1,6 +1,7 @@
 <?php
 namespace LosMiddleware\ApiProblem;
 
+use LosMiddleware\ApiProblem\Exception\ApiException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,9 +51,15 @@ final class ApiProblem implements ErrorMiddlewareInterface
      */
     private function getMessage($error, ServerRequestInterface $request, ResponseInterface $response)
     {
+        if ($error instanceof ApiException) {
+            $message = $error->getArrayMessage();
+            return !empty($message) ? $message : $error->getMessage();
+        }
+
         if ($error instanceof \Exception) {
             return $error->getMessage();
         }
+
         return 'An error ocurred.';
     }
 
