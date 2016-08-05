@@ -6,6 +6,12 @@ use Psr\Http\Message\ResponseInterface;
 
 final class ApiProblemHandler
 {
+    private $displayTrace = false;
+
+    public function __construct($config = [])
+    {
+        $this->displayTrace = $config['display_trace'] ?? false;
+    }
 
     /**
      * @param RequestInterface $request
@@ -23,6 +29,7 @@ final class ApiProblemHandler
             }
         }
         $handler = new ApiProblem();
-        return $handler->__invoke($err, $request, $response, null);
+        $handler->setDisplayTrace($this->displayTrace);
+        return $handler($err, $request, $response, null);
     }
 }

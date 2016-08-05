@@ -10,6 +10,7 @@ use Zend\Stratigility\ErrorMiddlewareInterface;
 
 final class ApiProblem implements ErrorMiddlewareInterface
 {
+    private $displayTrace = false;
 
     /**
      * @param RequestInterface $request
@@ -30,6 +31,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
         }
 
         $problem = new Model\ApiProblem($status, $detail);
+        $problem->setDetailIncludesStackTrace($this->displayTrace);
         $data = $problem->toArray();
 
         $requestId = $this->getRequestId($request, $response);
@@ -56,7 +58,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
             return !empty($message) ? $message : $error->getMessage();
         }
 
-        if ($error instanceof \Exception || (class_exists('Error') && $error instanceof \Error)) {
+        if ($error instanceof \Throwable) {
             return $error;
         }
 
@@ -72,8 +74,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
      */
     private function getStatusCode($error, ResponseInterface $response)
     {
-        if (($error instanceof \Exception || (class_exists('Error') && $error instanceof \Error))
-            && ($error->getCode() >= 400 && $error->getCode() <= 599)) {
+        if ($error instanceof \Throwable && ($error->getCode() >= 400 && $error->getCode() <= 599)) {
             return $error->getCode();
         }
 
@@ -103,4 +104,14 @@ final class ApiProblem implements ErrorMiddlewareInterface
 
         return '';
     }
+
+    /**
+     * @param boolean $displayTrace
+     */
+    public function setDisplayTrace($displayTrace)
+    {
+        $this->displayTrace = $displayTrace;
+        return $this;
+    }
+
 }

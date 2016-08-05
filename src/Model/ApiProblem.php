@@ -29,7 +29,7 @@ class ApiProblem
     /**
      * Description of the specific problem.
      *
-     * @var string|array|\Exception
+     * @var string|array|\Throwable
      */
     protected $detail = '';
 
@@ -218,7 +218,7 @@ class ApiProblem
      */
     protected function getDetail()
     {
-        if ($this->detail instanceof \Exception || (class_exists('Error') && $this->detail instanceof \Error)) {
+        if ($this->detail instanceof \Throwable) {
             return $this->createDetailFromException();
         }
 
@@ -235,7 +235,7 @@ class ApiProblem
      */
     protected function getStatus()
     {
-        if ($this->detail instanceof \Exception) {
+        if ($this->detail instanceof \Throwable) {
             $this->status = $this->createStatusFromException();
         }
 
@@ -268,7 +268,7 @@ class ApiProblem
             return $this->problemStatusTitles[$this->status];
         }
 
-        if ($this->detail instanceof \Exception) {
+        if ($this->detail instanceof \Throwable) {
             return get_class($this->detail);
         }
 
