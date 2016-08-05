@@ -57,7 +57,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
         }
 
         if ($error instanceof \Exception || (class_exists('Error') && $error instanceof \Error)) {
-            return $error->getMessage();
+            return $error;
         }
 
         return 'An error ocurred.';
@@ -72,7 +72,8 @@ final class ApiProblem implements ErrorMiddlewareInterface
      */
     private function getStatusCode($error, ResponseInterface $response)
     {
-        if ($error instanceof \Exception && ($error->getCode() >= 400 && $error->getCode() <= 599)) {
+        if (($error instanceof \Exception || (class_exists('Error') && $error instanceof \Error))
+            && ($error->getCode() >= 400 && $error->getCode() <= 599)) {
             return $error->getCode();
         }
 

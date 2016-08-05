@@ -218,7 +218,7 @@ class ApiProblem
      */
     protected function getDetail()
     {
-        if ($this->detail instanceof \Exception) {
+        if ($this->detail instanceof \Exception || (class_exists('Error') && $this->detail instanceof \Error)) {
             return $this->createDetailFromException();
         }
 
