@@ -12,6 +12,9 @@ class ApiProblemHandlerFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ApiProblemHandler();
+        $config = $container->get('config');
+        $config = $config['los_api_problem'] ?? [];
+
+        return new ApiProblemHandler($config);
     }
 }
