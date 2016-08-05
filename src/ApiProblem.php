@@ -56,7 +56,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
             return !empty($message) ? $message : $error->getMessage();
         }
 
-        if ($error instanceof \Exception) {
+        if ($error instanceof \Exception || (class_exists('Error') && $error instanceof \Error)) {
             return $error->getMessage();
         }
 
