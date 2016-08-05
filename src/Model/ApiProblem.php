@@ -29,7 +29,7 @@ class ApiProblem
     /**
      * Description of the specific problem.
      *
-     * @var string|\Exception
+     * @var string|array|\Exception
      */
     protected $detail = '';
 
@@ -122,11 +122,11 @@ class ApiProblem
      * if the status matches any known, the title field will be selected
      * from $problemStatusTitles as a result.
      *
-     * @param int    $status
-     * @param string $detail
-     * @param string $type
-     * @param string $title
-     * @param array  $additional
+     * @param int          $status
+     * @param string|array $detail
+     * @param string       $type
+     * @param string       $title
+     * @param array        $additional
      */
     public function __construct($status, $detail, $type = null, $title = null, array $additional = [])
     {
@@ -214,7 +214,7 @@ class ApiProblem
      * If an exception was provided, creates the detail message from it;
      * otherwise, detail as provided is used.
      *
-     * @return string
+     * @return string|array
      */
     protected function getDetail()
     {
@@ -279,6 +279,16 @@ class ApiProblem
         return $this->title;
     }
 
+    private function getExceptionMessage($exception)
+    {
+        if (!($exception instanceof ApiException)) {
+            return trim($exception->getMessage());
+        }
+
+        $message = $exception->getArrayMessage();
+        return !empty($message) ? $message : trim($exception->getMessage());
+    }
+
     /**
      * Create detail message from an exception.
      *
@@ -289,10 +299,10 @@ class ApiProblem
         $e = $this->detail;
 
         if (!$this->detailIncludesStackTrace) {
-            return $e->getMessage();
+            return $this->getExceptionMessage($e);
         }
 
-        $message = trim($e->getMessage());
+        $message = $this->getExceptionMessage($e);
         $this->additionalDetails['trace'] = $e->getTrace();
 
         $previous = [];
@@ -300,7 +310,7 @@ class ApiProblem
         while ($e) {
             $previous[] = [
                 'code'    => (int) $e->getCode(),
-                'message' => trim($e->getMessage()),
+                'message' => $this->getExceptionMessage($e),
                 'trace'   => $e->getTrace(),
             ];
             $e = $e->getPrevious();
