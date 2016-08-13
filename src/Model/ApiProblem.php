@@ -332,10 +332,13 @@ class ApiProblem
         $e      = $this->detail;
         $status = $e->getCode();
 
-        if (!empty($status)) {
-            return $status;
-        } else {
+        if (empty($status)
+            || ($status < 100)
+            || ($status > 599)
+        ) {
             return 500;
         }
+
+        return $status;
     }
 }

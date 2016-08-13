@@ -36,8 +36,11 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        'post_routing' => [
-            [ 'middleware' => LosMiddleware\ApiProblem\ApiProblem::class, 'error' => true ],
+        'error' => [
+            'middleware' => [
+                LosMiddleware\ApiProblem\ApiProblem::class, 
+            ]
+            'error' => true,
         ],
     ],
 ];    
