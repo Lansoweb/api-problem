@@ -37,7 +37,7 @@ class ApiException extends \Exception
      */
     public function getExtra()
     {
-        return $extra;
+        return $this->extra;
     }
 
 }
