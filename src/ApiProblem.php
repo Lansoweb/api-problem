@@ -23,6 +23,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
 
         $status = $this->getStatusCode($error, $response);
         $message = $this->getMessage($error, $request, $response);
+        $additional = $this->getAdditional($error);
 
         if ($status == 404 && empty($message)) {
             $detail = sprintf("Path '%s' not found.", $request->getUri()->getPath());
@@ -30,7 +31,7 @@ final class ApiProblem implements ErrorMiddlewareInterface
             $detail = $message;
         }
 
-        $problem = new Model\ApiProblem($status, $detail);
+        $problem = new Model\ApiProblem($status, $detail, null, null, $additional);
         $problem->setDetailIncludesStackTrace($this->displayTrace);
         $data = $problem->toArray();
 
@@ -63,6 +64,16 @@ final class ApiProblem implements ErrorMiddlewareInterface
         }
 
         return 'An error ocurred.';
+    }
+
+    private function getAdditional($error) : array
+    {
+        if (!($error instanceof ApiException)) {
+            return [];
+        }
+
+        $extra = $error->getExtra();
+        return !empty($extra) ? $extra : [];
     }
 
     /**
