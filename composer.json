@@ -4,11 +4,11 @@
   "require" : {
     "php" : "^7.0",
     "psr/http-message" : "~1.0",
-    "zendframework/zend-diactoros" : "~1.1",
-    "zendframework/zend-stratigility" : "~1.1"
+    "zendframework/zend-diactoros" : "^1.1 || ^2.0",
+    "zendframework/zend-stratigility" : "^1.1 || ^2.0"
   },
   "require-dev" : {
-    "phpunit/phpunit" : "^5.0",
+    "phpunit/phpunit" : "^5.0 || ^6.0",
     "squizlabs/php_codesniffer" : "^2.3",
     "container-interop/container-interop" : "~1.1",
     "satooshi/php-coveralls" : "~0.6"
