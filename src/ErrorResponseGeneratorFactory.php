@@ -3,7 +3,7 @@ namespace LosMiddleware\ApiProblem;
 
 use Interop\Container\ContainerInterface;
 
-class ApiProblemHandlerFactory
+class ErrorResponseGeneratorFactory
 {
 
     /**
@@ -15,6 +15,6 @@ class ApiProblemHandlerFactory
         $config = $container->get('config');
         $config = $config['los_api_problem'] ?? [];
 
-        return new ApiProblemHandler($config);
+        return new ErrorResponseGenerator($config);
     }
 }

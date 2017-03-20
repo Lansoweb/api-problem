@@ -2,16 +2,17 @@
   "name" : "los/api-problem",
   "description" : "PHP middleware that returns a json formatted response in case of error",
   "require" : {
-    "php" : "^7.0",
+    "php" : "^7.0 || ^7.1",
     "psr/http-message" : "~1.0",
-    "zendframework/zend-diactoros" : "^1.1 || ^2.0",
-    "zendframework/zend-stratigility" : "^1.1 || ^2.0"
+    "zendframework/zend-diactoros" : "^1.3",
+    "zendframework/zend-stratigility" : "^2.0.1"
   },
   "require-dev" : {
     "phpunit/phpunit" : "^5.0 || ^6.0",
     "squizlabs/php_codesniffer" : "^2.3",
-    "container-interop/container-interop" : "~1.1",
-    "satooshi/php-coveralls" : "~0.6"
+    "container-interop/container-interop" : "^1.2.0",
+    "satooshi/php-coveralls" : "~0.6",
+    "zendframework/zend-expressive-tooling": "^0.3.2"
   },
   "license" : "MIT",
   "autoload-dev" : {
