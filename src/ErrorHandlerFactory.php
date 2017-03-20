@@ -17,6 +17,6 @@ class ErrorHandlerFactory
         $config = $container->get('config');
         $config = $config['los_api_problem'] ?? [];
 
-        return new ErrorHandler(new Response(), new ApiProblemResponseGenerator($config));
+        return new ErrorHandler(new Response(), new ErrorResponseGenerator($config));
     }
 }
