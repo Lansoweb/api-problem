@@ -6,19 +6,27 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
-use Zend\Stratigility\ErrorMiddlewareInterface;
+use Zend\Stratigility\Utils;
 
-final class ApiProblem implements ErrorMiddlewareInterface
+final class ErrorResponseGenerator
 {
     private $displayTrace = false;
+
+    public function __construct($config = [])
+    {
+        $this->displayTrace = $config['display_trace'] ?? false;
+    }
 
     /**
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param callable $next
+     * @param callable|null $err
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function __invoke($error, ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
+    public function __invoke($error, RequestInterface $request, ResponseInterface $response)
     {
+        $response = $response->withStatus(Utils::getStatusCode($error, $response));
+
         $data = [];
 
         $status = $this->getStatusCode($error, $response);
