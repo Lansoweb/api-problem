@@ -8,7 +8,7 @@ Just add the middleware as the last in your application.
 
 For example:
 ```php
-$app->pipe(new \LosMiddleware\ApiProblem\ApiProblem();
+$app->pipe(new \LosMiddleware\ApiProblem\ApiProblem());
 ```
 
 It will return:
