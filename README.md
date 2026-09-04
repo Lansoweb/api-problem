@@ -1,5 +1,12 @@
 # Api Problem Middleware for PHP
 
+> [!WARNING]
+> ## Archived
+> This package is no longer maintained and will receive no further releases.
+> Mezzio applications should use
+> [`mezzio/mezzio-problem-details`](https://docs.mezzio.dev/mezzio-problem-details/)
+> for maintained PSR-7 problem-details support.
+
 This middleware returns a formatted json in case of error. It's inspired on the [ApiProblem](https://github.com/zfcampus/zf-api-problem) library, but with fewer dependencies. 
 
 ## Usage
